@@ -1,10 +1,15 @@
+import { useRef } from 'react'
 import './App.css'
+import Context from './context/Context'
+import Login from './pages/Login'
 
 function App() {
+  const usernameRef = useRef<HTMLInputElement>(null)
+
   return (
-    <div>
-      CHAT SOCKET
-    </div>
+    <Context.Provider value ={{ username: usernameRef }}>
+      <Login />
+    </Context.Provider>
   )
 }
 
