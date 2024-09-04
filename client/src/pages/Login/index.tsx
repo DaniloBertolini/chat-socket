@@ -1,10 +1,7 @@
 import { io } from 'socket.io-client'
-
-// const login = () => {
-//   const socket = io('http://localhost:3001')
-// }
 import { useContext } from "react";
 import Context from "../../context/Context";
+import { useNavigate } from 'react-router-dom';
 
 type LoginProps = {
   setUserId: (id: string) => void;
@@ -12,6 +9,7 @@ type LoginProps = {
 
 function Login({ setUserId }: LoginProps) {
   const context = useContext(Context);
+  const navigate = useNavigate()
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -25,6 +23,8 @@ function Login({ setUserId }: LoginProps) {
           const userId = socket.id;
           setUserId(userId!);
         });
+
+        navigate('/chat')
       }
     }
   }

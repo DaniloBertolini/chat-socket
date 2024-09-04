@@ -2,6 +2,8 @@ import { useRef, useState } from 'react'
 import './App.css'
 import Context from './context/Context'
 import Login from './pages/Login'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import Chat from './pages/Chat'
 
 function App() {
   const usernameRef = useRef<HTMLInputElement>(null)
@@ -9,7 +11,12 @@ function App() {
 
   return (
     <Context.Provider value ={{ username: usernameRef, userId }}>
-      <Login setUserId={setUserId} />
+      <Routes>
+        <Route path='/' element= { <Navigate to="/login" /> }/>
+        <Route path='/login' element= { <Login setUserId={setUserId} /> }/>
+        <Route path='/chat' element= { <Chat /> }/>
+      </Routes>
+      
     </Context.Provider>
   )
 }
