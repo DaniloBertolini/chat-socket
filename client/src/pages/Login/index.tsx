@@ -2,12 +2,9 @@ import { io } from 'socket.io-client'
 import { useContext } from "react";
 import Context from "../../context/Context";
 import { useNavigate } from 'react-router-dom';
+import { LoginProps } from '../../types';
 
-type LoginProps = {
-  setUserId: (id: string) => void;
-}
-
-function Login({ setUserId }: LoginProps) {
+function Login({ setSocket, setUserId }: LoginProps) {
   const context = useContext(Context);
   const navigate = useNavigate()
 
@@ -28,6 +25,7 @@ function Login({ setUserId }: LoginProps) {
           setUserId(userId!);
         });
 
+        setSocket(socket)
         navigate('/chat')
     }
   }

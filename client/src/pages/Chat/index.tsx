@@ -1,19 +1,32 @@
 import { useContext, useEffect, useState } from "react"
 import Context from "../../context/Context";
 import { useNavigate } from "react-router-dom";
+import { ChatProps, MessagesType } from "../../types";
 
-function Chat() {
+function Chat({ socket }: ChatProps) {
   const navigate = useNavigate()
   const context = useContext(Context);
-  const [messages, setMessages] = useState<string[]>([])
   const [message, setMessage] = useState<string>('')
+  const [messages, setMessages] = useState<MessagesType[]>([])
   
+  useEffect(() => {
+    if (!context.username) navigate('/login')
+
+    socket?.on('receive_message', (data: MessagesType) => {
+      console.log('recebi coisa aqui')
+      setMessages((current) => [...current, data])
+    })
+    console.log('messages', messages)
+
+    return () => { socket?.off('receive_message') }
+  }, [socket])
+
   const sendMessage = (event?: React.FormEvent<HTMLFormElement>) => {
     if (event) event.preventDefault()
 
     if (!message) return;
-
-    setMessages([...messages, message])
+    
+    socket?.emit('message', message)
     clearInput()
   }
 
@@ -30,11 +43,6 @@ function Chat() {
       sendMessage()
   }
 
-  useEffect(() => {
-    if (!context.username) navigate('/login')
-  }, [])
-
-
   return (
     <div>
       <form onSubmit={sendMessage}>
@@ -44,7 +52,7 @@ function Chat() {
       </form>
       <ul>
         {messages.map((message, index) => (
-          <li key={index}>{`${context.username}: ${message}`}</li>
+          <li key={index}>{`${message.author}: ${message.content}`}</li>
         ))}
       </ul>
     </div>
