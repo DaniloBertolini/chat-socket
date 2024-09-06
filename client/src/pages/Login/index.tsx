@@ -11,28 +11,31 @@ function Login({ setUserId }: LoginProps) {
   const context = useContext(Context);
   const navigate = useNavigate()
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    context.setUsername(event.target.value)
+  }
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (context.username && context.username.current) {
-      const userNameValue = context.username.current.value;
-      if (userNameValue !== '') {
+    const userNameValue = context.username;
+    if (userNameValue) {
         const socket = io('http://localhost:3001');
-  
+        
         socket.on('connect', () => {
           const userId = socket.id;
+          socket.emit('set_username', context.username)
           setUserId(userId!);
         });
 
         navigate('/chat')
-      }
     }
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>Chat Socket.io</h2>
-      <input type="text" ref={context.username} placeholder="Digite seu nome"/>
+      <input type="text" onChange={handleChange} placeholder="Digite seu nome"/>
       <button type="submit">Login</button>
     </form>
   )
