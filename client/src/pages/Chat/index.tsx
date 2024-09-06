@@ -12,13 +12,18 @@ function Chat({ socket }: ChatProps) {
   useEffect(() => {
     if (!context.username) navigate('/login')
 
+    socket?.on('previous_messages', (data: MessagesType[]) => {
+      setMessages(data)
+    })
+
     socket?.on('receive_message', (data: MessagesType) => {
-      console.log('recebi coisa aqui')
       setMessages((current) => [...current, data])
     })
-    console.log('messages', messages)
 
-    return () => { socket?.off('receive_message') }
+    return () => {
+      socket?.off('previous_messages');
+      socket?.off('receive_message')
+    }
   }, [socket])
 
   const sendMessage = (event?: React.FormEvent<HTMLFormElement>) => {
