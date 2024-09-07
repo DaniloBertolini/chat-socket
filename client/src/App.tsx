@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Chat from './pages/Chat'
 import { Socket } from 'socket.io-client'
+import GlobalStyle from './globalReset'
 
 function App() {
   const [username, setUsername] = useState<string | null>(null);
@@ -22,6 +23,7 @@ function App() {
 
   return (
     <Context.Provider value ={{ username, setUsername, userId, setUserId }}>
+      <GlobalStyle />
       <Routes>
         <Route path='/' element= { <Navigate to="/login" /> }/>
         <Route path='/login' element= { <Login setSocket={setSocket} setUserId={setUserId} /> }/>
