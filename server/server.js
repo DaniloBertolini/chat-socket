@@ -1,10 +1,11 @@
 import app from './app.js'
 import http from 'http'
 import { Server } from 'socket.io';
+import { allowedOrigins, MAX_MESSAGES, sanitize } from './utils.js';
 
 const PORT = 3001;
 const server = http.createServer(app)
-const io = new Server(server, {cors: {origin: ['http://localhost:5173', 'http://192.168.0.104:5173', 'http://172.18.0.1:5173']}});
+const io = new Server(server, {cors: {origin: allowedOrigins}});
 
 const messages = [];
 
@@ -13,23 +14,32 @@ io.on('connection', socket => {
 
   socket.emit('previous_messages', messages);
 
-  socket.on('disconnect', reason => {
-    console.log('Usuário desconectado!', socket.id)
+  socket.on('disconnect', () => {
+    console.log(`${socket.data.username || 'Usuário'} desconectado!`)
   })
 
   socket.on('set_username', username => {
-    socket.data.username = username
+    socket.data.username = sanitize(username)
   })
 
   socket.on('message', content => {
-    const message = {
-      content,
-      author: socket.data.username,
-      authorId: socket.id,
-    }
+    try {
+      const message = {
+        content: sanitize(content),
+        author: socket.data.username || 'Anônimo',
+        authorId: socket.id,
+      }
 
-    messages.push(message);
-    io.emit('receive_message', message)
+      if (messages.length > MAX_MESSAGES) {
+        messages.shift();
+      }
+  
+      messages.push(message);
+      io.emit('receive_message', message)
+
+    } catch (error) {
+      console.error('Erro ao processar mensagem:', error);
+    }
   })
 })
 
