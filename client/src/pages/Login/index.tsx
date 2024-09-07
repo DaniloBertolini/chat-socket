@@ -12,21 +12,29 @@ function Login({ setSocket, setUserId }: LoginProps) {
     context.setUsername(event.target.value)
   }
 
+  const sanitizeUsername = (username: string) => {
+    return username.replace(/[^\w\s]/gi, '');
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const userNameValue = context.username;
-    if (userNameValue) {
-        const socket = io('http://localhost:3001');
-        
-        socket.on('connect', () => {
-          const userId = socket.id;
-          socket.emit('set_username', context.username)
-          setUserId(userId!);
-        });
+    let userNameValue = context.username?.trim();
+    if (userNameValue && userNameValue.length > 0) {
+      userNameValue = sanitizeUsername(userNameValue)
+      const socket = io('http://localhost:3001');
+      
+      socket.off('connect');
+      socket.on('connect', () => {
+        const userId = socket.id;
+        socket.emit('set_username', userNameValue)
+        setUserId(userId!);
+      });
 
-        setSocket(socket)
-        navigate('/chat')
+      setSocket(socket)
+      navigate('/chat')
+    } else {
+      alert("Por favor, insira um nome válido.");
     }
   }
 
@@ -34,7 +42,7 @@ function Login({ setSocket, setUserId }: LoginProps) {
     <form onSubmit={handleSubmit}>
       <h2>Chat Socket.io</h2>
       <input type="text" onChange={handleChange} placeholder="Digite seu nome"/>
-      <button type="submit">Login</button>
+      <button type="submit" disabled={!context.username || context.username.trim() === ''}>Login</button>
     </form>
   )
 }
