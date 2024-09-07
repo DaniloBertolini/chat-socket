@@ -3,6 +3,7 @@ import { useContext } from "react";
 import Context from "../../context/Context";
 import { useNavigate } from 'react-router-dom';
 import { LoginProps } from '../../types';
+import styles from './Login.module.css'
 
 function Login({ setSocket, setUserId }: LoginProps) {
   const context = useContext(Context);
@@ -39,11 +40,13 @@ function Login({ setSocket, setUserId }: LoginProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Chat Socket.io</h2>
-      <input type="text" onChange={handleChange} placeholder="Digite seu nome"/>
-      <button type="submit" disabled={!context.username || context.username.trim() === ''}>Login</button>
-    </form>
+    <div className={ styles.container }>
+      <form className={ styles.form } onSubmit={handleSubmit}>
+        <h2 className={ styles.title }>Login</h2>
+        <input className={ styles.input } type="text" onChange={handleChange} placeholder="Digite seu nome"/>
+        <button className={ styles.button } type="submit" disabled={!context.username || context.username.trim() === ''}>Login</button>
+      </form>
+    </div>
   )
 }
 

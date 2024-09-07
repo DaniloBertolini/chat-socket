@@ -20,7 +20,7 @@ time, mark, audio, video, button {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
-	font-family: 'Silkscreen', cursive;
+	font-family: 'nerkoOne', cursive;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
@@ -29,6 +29,9 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+}
+input {
+  outline: none;
 }
 ol, ul {
 	list-style: none;
@@ -44,6 +47,10 @@ q:before, q:after {
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
+}
+@font-face {
+	font-family: 'nerkoOne';
+	src: url('/font/NerkoOne-Regular.ttf') format('truetype');
 }
 `
 
