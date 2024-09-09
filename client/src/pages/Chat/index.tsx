@@ -1,7 +1,9 @@
-import { useContext, useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react";
 import Context from "../../context/Context";
 import { useNavigate } from "react-router-dom";
 import { ChatProps, Message } from "../../types";
+import styles from './Chat.module.css';
+import send from '/send.svg';
 
 function Chat({ socket }: ChatProps) {
   const navigate = useNavigate();
@@ -72,18 +74,26 @@ function Chat({ socket }: ChatProps) {
   }
 
   return (
-    <div>
-      <form onSubmit={sendMessage}>
-        <h2>Chat</h2>
-        <input type="text" onKeyDown={(e)=>getEnterKey(e)} value={message} onChange={handleChange} placeholder="Digite sua mensagem..."/>
-        <button type="submit" disabled={!message.trim()}>Enviar</button>
+    <div className={ styles.container }>
+      <form className={ styles.form } onSubmit={sendMessage}>
+        <ul className={ styles.ul} ref={messagesContainerRef}>
+          {messages.map((message, index) => (
+            <li className={ `${styles.li} ${
+              context.userId === message.authorId ? styles.own : ''
+            }` } key={index}>{
+              context.userId !== message.authorId ? 
+                `${message.author}: ${message.content}` :
+                `${message.content}`
+              }</li>
+          ))}
+          <div ref={endOfMessagesRef}></div>
+        </ul>
+        <div className={ styles.divInput }>
+          <input className={ styles.input } type="text" onKeyDown={(e)=>getEnterKey(e)} value={message} onChange={handleChange} placeholder="Digite sua mensagem..."/>
+          <span className={ styles.span } />
+          <button className={ styles.button } type="submit" disabled={!message.trim()}><img src={send}></img></button>
+        </div>
       </form>
-      <ul ref={messagesContainerRef}>
-        {messages.map((message, index) => (
-          <li key={index}>{`${message.author}: ${message.content}`}</li>
-        ))}
-        <div ref={endOfMessagesRef}></div>
-      </ul>
     </div>
   )
 }
