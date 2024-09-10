@@ -19,6 +19,7 @@
   background-color: cadetblue;
   height: 90vh;
   width: 500px;
+  position: relative;
 }
 
 .input {
@@ -33,16 +34,45 @@
   border-right: 0px;
 }
 
+.users {
+  display: flex;
+  align-items: center;
+  margin-right: 25px
+}
+
 .divInput {
   display: flex;
   width: 100%;
 }
 
-.span {
-  width: 2px;
+.spanMessage {
+  width: 1px;
   height: 100%;
   align-self: center;
   background-color: rgba(128, 182, 184, 0.596);
+}
+
+.spanHead {
+  width: 95%;
+  height: 75px;
+  border-radius: 50px;
+  border-bottom: 2px solid rgb(108, 179, 182);
+  position: absolute;
+  top: 0px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.buttonCaret {
+  background-color: transparent;
+  cursor: pointer;
+  margin-left: 25px
+}
+
+.userCount {
+  color: rgb(209, 197, 197);
+  font-size: 1.4em;
+  margin-left: 8px;
 }
 
 .ul {

@@ -14,8 +14,11 @@ io.on('connection', socket => {
 
   socket.emit('previous_messages', messages);
 
+  io.emit('userCount', io.engine.clientsCount);
+
   socket.on('disconnect', () => {
     console.log(`${socket.data.username || 'Usuário'} desconectado!`)
+    io.emit('userCount', io.engine.clientsCount);
   })
 
   socket.on('set_username', username => {

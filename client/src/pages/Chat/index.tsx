@@ -4,12 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { ChatProps, Message } from "../../types";
 import styles from './Chat.module.css';
 import send from '/send.svg';
+import caretLeft from '/caret-left.svg';
+import userCircle from '/user-circle.svg';
 
 function Chat({ socket }: ChatProps) {
   const navigate = useNavigate();
   const context = useContext(Context);
   const [message, setMessage] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
+  const [userCount, setUserCount] = useState(0);
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLUListElement>(null);
   
@@ -29,9 +32,14 @@ function Chat({ socket }: ChatProps) {
       scrollToBottom(true);
     })
 
+    socket.on('userCount', (count) => {
+      setUserCount(count);
+    });
+
     return () => {
       socket?.off('previous_messages');
       socket?.off('receive_message');
+      socket.off('userCount');
     }
   }, [socket, context.username])
 
@@ -76,6 +84,13 @@ function Chat({ socket }: ChatProps) {
   return (
     <div className={ styles.container }>
       <form className={ styles.form } onSubmit={sendMessage}>
+        <div className={ styles.spanHead }>
+          <button className={ styles.buttonCaret } type="button"><img src={caretLeft} /></button>
+          <div className={ styles.users }>
+            <img src={userCircle} />
+            <p className={ styles.userCount }>{userCount}</p>
+          </div>
+        </div>
         <ul className={ styles.ul} ref={messagesContainerRef}>
           {messages.map((message, index) => (
             <li className={ `${styles.li} ${
@@ -89,9 +104,9 @@ function Chat({ socket }: ChatProps) {
           <div ref={endOfMessagesRef}></div>
         </ul>
         <div className={ styles.divInput }>
-          <input className={ styles.input } type="text" onKeyDown={(e)=>getEnterKey(e)} value={message} onChange={handleChange} placeholder="Digite sua mensagem..."/>
-          <span className={ styles.span } />
-          <button className={ styles.button } type="submit" disabled={!message.trim()}><img src={send}></img></button>
+          <input className={ styles.input } type="text" onKeyDown={(e)=>getEnterKey(e)} value={message} onChange={handleChange} placeholder=""/>
+          <span className={ styles.spanMessage } />
+          <button className={ styles.button } type="submit" disabled={!message.trim()}><img src={send} /></button>
         </div>
       </form>
     </div>
