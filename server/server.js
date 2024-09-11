@@ -1,11 +1,11 @@
 import app from './app.js'
 import http from 'http'
 import { Server } from 'socket.io';
-import { allowedOrigins, MAX_MESSAGES, sanitize } from './utils.js';
+import { MAX_MESSAGES, sanitize } from './utils.js';
 
 const PORT = 3001;
 const server = http.createServer(app)
-const io = new Server(server, {cors: {origin: allowedOrigins}});
+const io = new Server(server, {cors: {origin: "*"}});
 
 const messages = [];
 
